@@ -10,14 +10,25 @@ import {
 	Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { finalData as newData } from "./util";
+import { finalData as soilData, finalDataWater as waterData } from "./util";
+// import { finalData as newData } from "./util";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export default function LineChart({ showData, parameters }) {
+export default function LineChart({ activeTab, showData, parameters }) {
 	const isInitialRender = useRef(true);
+	const [newData, setNewData] = useState(soilData);
 	const [shownParameter, setShownParameter] = useState("TN");
 	const [checkbox, setCheckbox] = useState(true);
+
+	useEffect(() => {
+		setShownParameter("TN");
+		if (activeTab === "Water") {
+			setNewData(waterData);
+		} else {
+			setNewData(soilData);
+		}
+	}, [activeTab]);
 
 	// check for checkbox here
 
@@ -270,7 +281,7 @@ export default function LineChart({ showData, parameters }) {
 				return mean;
 			})()
 		);
-	}, [showData, shownParameter, checkbox]);
+	}, [showData, shownParameter, checkbox, newData]);
 
 	const handleChange = (e) => {
 		if (e.target.name === "parameterOne") {
@@ -282,6 +293,7 @@ export default function LineChart({ showData, parameters }) {
 
 	return (
 		<>
+			{console.log("new", data)}
 			<div className="select-box">
 				<div>
 					<label htmlFor="parameterOne">Parameter: </label>

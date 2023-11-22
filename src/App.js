@@ -7,16 +7,18 @@ import BarChart from "./BarChart";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import { marker } from "leaflet";
-import { finalData as newData } from "./util";
+import { finalData as soilData, finalDataWater as waterData } from "./util";
 import { ChakraProvider } from "@chakra-ui/react";
 
 function App() {
 	const position = [41.0249, -83.68591];
+	const [tab, setTab] = useState("Soil");
+	const [newData, setNewData] = useState(soilData);
 
 	const [showData, setShowData] = useState({ name: "Wetland Pool 1" });
 
 	// The parameter change is needed for every individual charts
-	const parameters = ["TP", "TN", "Al", "Fe", "P"];
+	const [parameters, setParameters] = useState(["TP", "TN", "Al", "Fe", "P"]);
 	const [shownParameterOne, setShownParameterOne] = useState("TN");
 	const [shownParameterTwo, setShownParameterTwo] = useState("TP");
 	const [dataOne, setDataOne] = useState(
@@ -56,13 +58,30 @@ function App() {
 		setShowData(shownData);
 	};
 
+	const changeTab = (e) => {
+		if (e.target.innerText === "Soil") {
+			setTab("Soil");
+			setNewData(soilData);
+			setParameters(["TP", "TN", "Al", "Fe", "P"]);
+		} else {
+			setTab("Water");
+			setParameters(["TP", "TN", "NO3", "NH4", "PO4"]);
+
+			setNewData(waterData);
+		}
+	};
+
 	return (
 		<ChakraProvider>
 			<div className="App">
 				<h1>Visual Representation of Wetland pool</h1>
 				<div className="tabs">
-					<button className="active">Soil</button>
-					<button>Water</button>
+					<button className={tab === "Soil" ? "active" : ""} onClick={changeTab}>
+						Soil
+					</button>
+					<button className={tab === "Water" ? "active" : ""} onClick={changeTab}>
+						Water
+					</button>
 				</div>
 				<div className="visualization">
 					<div className="map-container">
@@ -93,14 +112,14 @@ function App() {
 						</MapContainer>
 					</div>
 					<div className="line-chart-container">
-						<LineChart showData={showData} parameters={parameters} />
+						<LineChart activeTab={tab} showData={showData} parameters={parameters} />
 					</div>
 					<div className="scatterplot-container">
-						<Scatterplot showData={showData} parameters={parameters} />
+						<Scatterplot activeTab={tab} showData={showData} parameters={parameters} />
 					</div>
 
 					<div className="bar-chart-container">
-						<BarChart showData={showData} parameters={parameters} />
+						<BarChart activeTab={tab} showData={showData} parameters={parameters} />
 					</div>
 				</div>
 			</div>
