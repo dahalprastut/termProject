@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { finalData as newData } from "./util";
+// import { finalData as newData } from "./util";
+import { finalData as soilData, finalDataWater as waterData } from "./util";
 import TimeSlider from "./components/Slider";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function BarChart({ showData, parameters }) {
+export default function BarChart({ activeTab, showData, parameters }) {
+	const [newData, setNewData] = useState(soilData);
 	const [selectedParameter, setSelectedParameter] = useState("TN");
 	const [season, setSeason] = useState("Summer");
 	const calculateMean = (values) => {
 		const sum = values.reduce((acc, val) => acc + val, 0);
 		return sum / values.length;
 	};
+
+	useEffect(() => {
+		setSelectedParameter("TN");
+
+		if (activeTab === "Water") {
+			setNewData(waterData);
+		} else {
+			setNewData(soilData);
+		}
+	}, [activeTab]);
 
 	// Calculate mean values for the selected parameter
 	const meanValues = newData.map((wetland) => {
@@ -85,7 +97,7 @@ export default function BarChart({ showData, parameters }) {
 				name: wetland.name,
 			};
 		});
-	}, [season]);
+	}, [season, newData]);
 	const sliderChangeHandler = (e) => {
 		if (e === 0) {
 			setSeason("all");

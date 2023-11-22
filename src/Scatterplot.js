@@ -1,18 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Chart as ChartJS, LinearScale, PointElement, LineElement, Tooltip, Legend } from "chart.js";
 import { Scatter } from "react-chartjs-2";
-import { finalData as newData } from "./util";
+// import { finalData as newData } from "./util";
+import { finalData as soilData, finalDataWater as waterData } from "./util";
 import TimeSlider from "./components/Slider";
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-export default function Scatterplot({ showData, parameters }) {
+export default function Scatterplot({ activeTab, showData, parameters }) {
 	// The parameter change is needed for every individual charts
 	const isInitialRender = useRef(true);
+	const [newData, setNewData] = useState(soilData);
 	const [shownParameterOne, setShownParameterOne] = useState("TN");
 	const [shownParameterTwo, setShownParameterTwo] = useState("TP");
 	const [checkbox, setCheckbox] = useState(true);
 	const [season, setSeason] = useState("Spring");
+	useEffect(() => {
+		setShownParameterOne("TN");
+		setShownParameterTwo("TP");
+
+		if (activeTab === "Water") {
+			setNewData(waterData);
+		} else {
+			setNewData(soilData);
+		}
+	}, [activeTab]);
+	// console.log("sdf", newData.find((el) => el.name === showData.name).individual_values[season]?.[shownParameterOne]);
+	// console.log("sdf", newData.find((el) => el.name === showData.name).individual_values[season]?.[shownParameterTwo]);
 	const [dataOne, setDataOne] = useState(
 		(() => {
 			let dataArray;
@@ -163,7 +177,7 @@ export default function Scatterplot({ showData, parameters }) {
 				return dataArray;
 			})()
 		);
-	}, [showData, shownParameterOne, shownParameterTwo, season, checkbox]);
+	}, [showData, shownParameterOne, shownParameterTwo, season, checkbox, newData]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
