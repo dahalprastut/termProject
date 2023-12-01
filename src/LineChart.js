@@ -150,8 +150,8 @@ export default function LineChart({ activeTab, showData, parameters }) {
 			{
 				label: `${shownParameter}`,
 				data: [meanSpring, meanAutumn, meanSummer, meanWinter],
-				borderColor: "rgb(255, 99, 132)",
 				borderWidth: "2",
+				borderColor: "rgb(255, 99, 132)",
 				backgroundColor: "rgba(255, 99, 132, 0.5)",
 			},
 			// {
@@ -293,7 +293,6 @@ export default function LineChart({ activeTab, showData, parameters }) {
 
 	return (
 		<>
-			{console.log("new", data)}
 			<div className="select-box">
 				<div>
 					<label htmlFor="parameterOne">Parameter: </label>

@@ -15,6 +15,14 @@ export default function Scatterplot({ activeTab, showData, parameters }) {
 	const [shownParameterTwo, setShownParameterTwo] = useState("TP");
 	const [checkbox, setCheckbox] = useState(true);
 	const [season, setSeason] = useState("Spring");
+
+	const marks = [
+		{ value: 0, name: "All" },
+		{ value: 25, name: "Spring" },
+		{ value: 50, name: "Summer" },
+		{ value: 75, name: "Autumn" },
+		{ value: 100, name: "Winter" },
+	];
 	useEffect(() => {
 		setShownParameterOne("TN");
 		setShownParameterTwo("TP");
@@ -192,15 +200,15 @@ export default function Scatterplot({ activeTab, showData, parameters }) {
 	};
 
 	const sliderChangeHandler = (e) => {
-		if (e === 0) {
+		if (e.target.value == 0) {
 			setSeason("all");
-		} else if (e === 25) {
+		} else if (e.target.value == 25) {
 			setSeason("Spring");
-		} else if (e === 50) {
+		} else if (e.target.value == 50) {
 			setSeason("Summer");
-		} else if (e === 75) {
+		} else if (e.target.value == 75) {
 			setSeason("Autumn");
-		} else if (e === 100) {
+		} else if (e.target.value == 100) {
 			setSeason("Winter");
 		}
 	};
@@ -221,15 +229,21 @@ export default function Scatterplot({ activeTab, showData, parameters }) {
 							<option value={el}>{el}</option>
 						))}
 					</select>
+					<label htmlFor="parameterThree">Season: </label>
+					<select name="parameterThree" defaultValue={25} onChange={sliderChangeHandler}>
+						{marks.map((el) => (
+							<option value={el.value}>{el.name}</option>
+						))}
+					</select>
 				</div>
 				<div className="all-pools">
 					<label htmlFor="allData">Select All Pools</label>
 					<input type="checkbox" checked={checkbox} value={checkbox} onChange={handleChange} />
 				</div>
 			</div>
-			<div className="slider">
+			{/* <div className="slider">
 				<TimeSlider changeSlider={sliderChangeHandler} defaultVal={25} />
-			</div>
+			</div> */}
 			<Scatter options={options} data={datas} />
 		</>
 	);

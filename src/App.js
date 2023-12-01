@@ -46,18 +46,29 @@ function App() {
 		iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
 		iconSize: [38, 38],
 	});
+	const newCustomIcon = new Icon({
+		iconUrl: "https://cdn-icons-png.flaticon.com/512/447/447031.png",
+		iconSize: [38, 38],
+	});
+
+	const [selectedMarker, setSelectedMarker] = useState(null);
 
 	const markerClickHandler = (e) => {
-		// console.log("e", e);
 		const shownData = newData.find((el) => el.name === e.target._popup._content);
-		// e.target.setIcon(
-		// 	e.target.options.icon.options.iconUrl == "https://cdn-icons-png.flaticon.com/512/684/684908.png"
-		// 		? "https://cdn-icons-png.flaticon.com/512/684/684908.png"
-		// 		: "https://cdn-icons-png.flaticon.com/512/447/447031.png"
-		// );
+
+		if (selectedMarker) {
+			selectedMarker.setIcon(customIcon);
+		}
+
+		setSelectedMarker(e.target);
 		setShowData(shownData);
 	};
-
+	useEffect(() => {
+		// This effect runs after the state has been updated
+		if (selectedMarker) {
+			selectedMarker.setIcon(newCustomIcon);
+		}
+	}, [selectedMarker, newCustomIcon]);
 	const changeTab = (e) => {
 		if (e.target.innerText === "Soil") {
 			setTab("Soil");
@@ -85,7 +96,7 @@ function App() {
 				</div>
 				<div className="visualization">
 					<div className="map-container">
-						<MapContainer center={position} zoom={17}>
+						<MapContainer center={position} zoom={17} scrollWheelZoom={false}>
 							<TileLayer
 								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
